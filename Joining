@@ -1,0 +1,83 @@
+# Top 10 Countries regarding Customer numbers
+
+<pre>
+SELECT 
+	D.country,
+	COUNT (A.customer_id) AS customers_number
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_id = D.country_id
+GROUP BY D.country
+ORDER BY COUNT (A.customer_id) DESC 
+LIMIT 10;
+
+</pre>
+
+# Top 10 Cities that fall within the top 10 Countries
+
+<pre>
+
+SELECT 
+	C.city,
+	D.country,
+	COUNT (A.customer_id) AS customers_number
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_id = D.country_id
+WHERE D.country IN (
+	SELECT country
+	FROM customer A
+	INNER JOIN address B ON A.address_id = B.address_id
+	INNER JOIN city C ON B.city_id = C.city_id
+	INNER JOIN country D ON C.country_id = D.country_id
+	GROUP BY D.country
+	ORDER BY COUNT(A.customer_id)DESC
+	LIMIT 10
+)
+GROUP BY 
+	C.city,
+	D.country
+ORDER BY COUNT (A.customer_id) DESC 
+LIMIT 10;
+
+</pre>
+
+# Top 5 Clients from Top 10 Cities based on amount spent
+
+<pre>
+
+SELECT 
+	A.customer_id,
+	A.first_name,
+	A.last_name,
+	D.country,
+	C.city,
+	SUM(E.amount) AS Total_amount_paid
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_id = D.country_id
+INNER JOIN payment E ON A.customer_id = E.customer_id
+WHERE C.city IN (
+	SELECT city
+	FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_id = D.country_id
+GROUP BY 
+	C.city
+ORDER BY COUNT (A.customer_id) DESC 
+LIMIT 10
+)
+GROUP BY 
+	A.customer_id,
+	A.first_name,
+	A.last_name,
+	D.country,
+	C.city
+ORDER BY SUM (E.amount) DESC 
+LIMIT 5;
+
+</pre>
