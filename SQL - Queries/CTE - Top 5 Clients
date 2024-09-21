@@ -1,4 +1,4 @@
-# Identify with CTE the average spent by the top 5 clients from Rockbuster 
+# Identify with CTE the average spent by the top 5 clients from Rockbuster in the top 10 cities by number of customers
 
 <pre>
 
@@ -39,7 +39,7 @@ FROM total_amount_paid_cte;
 
 </pre>
 
-# Identify how many of the top 5 clients identified in the query above are based within each country
+# Identify how many of the top 5 clients identified in the query above are based within the top 10 countries by revenue
 
 <pre>
 
